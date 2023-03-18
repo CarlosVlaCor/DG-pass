@@ -1,0 +1,113 @@
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org.extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/2c301b3f37.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar bg-dark">
+    <div class="container-fluid">
+
+        <a class="navbar-brand link-light" href="/"><h1>DG-pass</h1></a>
+
+        <form  method="POST" th:action="@{/logout}">
+            <input type="submit" class="btn btn-secondary" value="Cerrar sesión">
+        </form>
+    </div>
+</nav>
+<section class="vh-100 gradient-custom" sec:authorize="hasRole('ADMIN')">
+
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+
+                        <div class="mb-md-1 mt-md-3 pb-5">
+                            <form th:object="${userInsert}" th:action="@{/user/newUser}" method="POST">
+                                <h2 class="fw-bold mb-3 text-uppercase">Registrar usuario</h2>
+                                <!-- 2 column grid layout with text inputs for the first and last names -->
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <div class="form-outline">
+                                            <input type="text" id="form3Example1" class="form-control" th:field="*{userName}"/>
+                                            <label class="form-label" for="form3Example1">Nombre de usuario</label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-outline">
+                                            <input type="email" id="form3Example2" class="form-control" th:field="*{email}"/>
+                                            <label class="form-label" for="form3Example2">Correo</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email input -->
+                                <div class="form-outline mb-4">
+                                    <input type="password" id="form3Example3" class="form-control" th:field="*{password}" />
+                                    <label class="form-label" for="form3Example3">Password</label>
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <select th:field="*{rol}" class="form-select mb-3">
+                                        <option th:value="1" th:text="ADMIN"></option>
+                                        <option th:value="2" th:text="USER"></option>
+                                    </select>
+                                    <label class="form-label" for="form3Example3">Rol</label>
+                                </div>
+
+
+                                <!-- Submit button -->
+                                <button type="submit" class="btn btn-primary btn-block mb-4">Registrar usuario</button>
+
+                            </form>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container mt-3">
+<table class="table  table-striped mt-6 table-hover ">
+    <thead class="table-dark">
+    <tr>
+        <th>#</th>
+        <th>Nombres de ususario</th>
+        <th sec:authorize="hasRole('ADMIN')">Correo electrónico </th>
+        <th sec:authorize="hasRole('ADMIN')">Contraseña</th>
+        <th sec:authorize="hasRole('ADMIN')">Editar</th>
+        <th sec:authorize="hasRole('ADMIN')">Eliminar</th>
+    </tr>
+    </thead>
+    <tbody class="table-secondary">
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.email}" sec:authorize="hasRole('ADMIN')"></td>
+        <td th:text="${user.password}" sec:authorize="hasRole('ADMIN')"></td>
+        <td sec:authorize="hasRole('ADMIN')">
+            <a class="btn btn-secondary" th:href="@{/editar/} + ${user.id}">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+        </td>
+        <td sec:authorize="hasRole('ADMIN')">
+            <form th:action="@{/user/delete/} + ${user.id}" method="POST">
+                <button class="btn btn-danger" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</body>
+</html>
