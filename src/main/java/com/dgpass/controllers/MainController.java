@@ -4,6 +4,7 @@ import com.dgpass.Entity.User;
 import com.dgpass.dao.CambiarPass;
 import com.dgpass.dao.UserDTO;
 import com.dgpass.service.UserService;
+import com.dgpass.utils.Captcha;
 import com.dgpass.utils.Email;
 import com.dgpass.utils.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class MainController {
@@ -26,9 +28,12 @@ public class MainController {
     @Autowired
     private EmailSender emailSender;
     @GetMapping("/")
-    public String inicio(Model model){
+    public String inicio(Model model, HttpSession session){
 
         model.addAttribute("users", userService.findAllUsers());
+        Captcha captcha = new Captcha();
+        captcha.generateImage();
+        session.setAttribute("captcha", captcha);
         model.addAttribute("userInsert", new UserDTO());
         return "index.html";
     }

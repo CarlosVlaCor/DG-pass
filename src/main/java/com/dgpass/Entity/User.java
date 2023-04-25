@@ -18,6 +18,7 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String phoneNumber;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol")
     private Rol rol;

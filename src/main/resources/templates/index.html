@@ -18,12 +18,16 @@
         </form>
     </div>
 </nav>
-<section class="vh-100 gradient-custom" sec:authorize="hasRole('ADMIN')">
 
+<section class=" gradient-custom mb-6" sec:authorize="hasRole('ADMIN')">
     <div class="container py-5 h-100">
+
         <div class="row d-flex justify-content-center align-items-center h-100">
 
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="alert alert-danger" th:if="${errCaptcha != null}" role="alert">
+                    Error en el captcha
+                </div>
                 <div class="card bg-dark text-white" style="border-radius: 1rem;">
                     <div class="card-body p-5 text-center">
 
@@ -45,18 +49,35 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <div class="form-outline">
+                                            <input type="text" id="tel" class="form-control" th:field="*{phoneNumber}" />
+                                            <label class="form-label" for="typeEmailX">Número de teléfono</label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-outline">
+                                            <select th:field="*{rol}" class="form-select mb-3">
+                                                <option th:value="1" th:text="ADMIN"></option>
+                                                <option th:value="2" th:text="USER"></option>
+                                            </select>
+                                            <label class="form-label" for="form3Example3">Rol</label>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Email input -->
                                 <div class="form-outline mb-4">
                                     <input type="password" id="form3Example3" class="form-control" th:field="*{password}" />
                                     <label class="form-label" for="form3Example3">Password</label>
                                 </div>
+
                                 <div class="form-outline mb-4">
-                                    <select th:field="*{rol}" class="form-select mb-3">
-                                        <option th:value="1" th:text="ADMIN"></option>
-                                        <option th:value="2" th:text="USER"></option>
-                                    </select>
-                                    <label class="form-label" for="form3Example3">Rol</label>
+                                    <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + session.captcha.getImage()}" alt="">
+                                    <input type="text" id="form3Example3" class="form-control mt-3" th:field="*{captcha}"/>
+                                    <label class="form-label" for="form3Example3">Escriba el captcha pa registrar pues</label>
+
                                 </div>
 
 
@@ -74,13 +95,14 @@
         </div>
     </div>
 </section>
-<div class="container mt-3">
+<div class="container ">
 <table class="table  table-striped mt-6 table-hover ">
     <thead class="table-dark">
     <tr>
         <th>#</th>
         <th>Nombres de ususario</th>
         <th sec:authorize="hasRole('ADMIN')">Correo electrónico </th>
+        <th sec:authorize="hasRole('ADMIN')">Número de teléfono </th>
         <th sec:authorize="hasRole('ADMIN')">Contraseña</th>
         <th sec:authorize="hasRole('ADMIN')">Editar</th>
         <th sec:authorize="hasRole('ADMIN')">Eliminar</th>
@@ -91,6 +113,7 @@
         <td th:text="${user.id}"></td>
         <td th:text="${user.username}"></td>
         <td th:text="${user.email}" sec:authorize="hasRole('ADMIN')"></td>
+        <td th:text="${user.phoneNumber}" sec:authorize="hasRole('ADMIN')"></td>
         <td th:text="${user.password}" sec:authorize="hasRole('ADMIN')"></td>
         <td sec:authorize="hasRole('ADMIN')">
             <a class="btn btn-secondary" th:href="@{/editar/} + ${user.id}">

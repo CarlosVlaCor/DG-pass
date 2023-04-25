@@ -26,7 +26,9 @@ public class UserServiceImpl implements  UserService{
     public User registerUser(User user) {
         User newUser = new User();
         Rol rol = rolRepository.findById(RolEnum.USER.getId());
+        newUser.setUsername(user.getUsername());
         newUser.setRol(rol);
+        newUser.setPhoneNumber(user.getPhoneNumber());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(newUser);
@@ -45,6 +47,7 @@ public class UserServiceImpl implements  UserService{
         newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         newUser.setEmail(userDTO.getEmail());
         newUser.setUsername(userDTO.getUserName());
+        newUser.setPhoneNumber(userDTO.getPhoneNumber());
         Rol rol = rolRepository.findById(userDTO.getRol());
         newUser.setRol(rol);
         userRepository.save(newUser);
@@ -61,6 +64,7 @@ public class UserServiceImpl implements  UserService{
         User actUser = userRepository.findById(id).get();
         actUser.setUsername(user.getUsername());
         actUser.setEmail(user.getEmail());
+        actUser.setPhoneNumber(user.getPhoneNumber());
         if(user.getPassword() != null || !user.getPassword().isBlank()){
             actUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
